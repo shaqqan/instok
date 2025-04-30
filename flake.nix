@@ -30,12 +30,11 @@
         devShells.default = import ./shell.nix {inherit pkgs;};
 
         # Output package
-        # packages.default = pkgs.callPackage ./. {};
+        packages.default = pkgs.callPackage ./. {};
       }
     );
-    # // {
-    #   # Overlay module
-    #   nixosModules.bot = import ./module.nix self;
-    # };
-
+  # // {
+  #   # Overlay module
+  #   nixosModules.bot = import ./module.nix self;
+  # };
 }

@@ -1,9 +1,8 @@
 import { blue, Bot, webhookCallback } from "./deps.ts";
 import "./utils/config.ts";
-import env from "./utils/config.ts";
 import delta from "./delta/mod.ts";
-import { Config, Configs } from "./config.ts";
-import args from "./cli.ts";
+import { Config, Configs } from "./utils/config.ts";
+import args from "./utils/cli.ts";
 
 export const handle = (bot: Bot) => webhookCallback(bot, "std/http");
 
