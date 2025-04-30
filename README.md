@@ -1,54 +1,55 @@
-<p align="center"><a href="https://t.me/xeonittebot" target="_blank"><img height="300" width="300" src="./assets/logo.jpg"/></a></p>
+<p align="center">
+    <img src=".github/assets/header.png" alt="Ecma Uzbekistan's {Telegram}">
+</p>
 
-<h2 align="center">Xeonitte (Deno)</h2>
+<p align="center">
+    <h3 align="center">Telegram bot for managing all sub-communities.</h3>
+</p>
 
-<p align="center"><a href="https://t.me/xeonittebot"><img src="https://img.shields.io/static/v1.svg?style=flat-square&label=heroku&message=deployed&logoColor=eceff4&logo=github&colorA=000000&colorB=ffffff"/></a></p>
+<p align="center">
+    <img align="center" src="https://img.shields.io/github/languages/top/ecma-uz/telegram?style=flat&logo=javascript&logoColor=ffffff&labelColor=00AC5B&color=00AC5B" alt="Top Used Language">
+</p>
 
-<p align="center"><a href="https://t.me/s/xinuxuz" target="_blank">Xinux O'zbekiston</a> jamiyati uchun Telegram bot.</p>
+## About
 
-**Ushbu bot [grammY](https://github.com/grammyjs/grammY) kutubxonasi bilan
-qurilgan hisoblanib, unda [Deno.land](https://deno.land/) dasturi ushbu botni
-o'qish va ishga tushurish uchun qo'llaniladi. Bot modulyar sxemada qurilgan
-hisoblanib, unga yangi plagin va modullar qo'shish hech qanday muammo
-tug'dirmaydi va bu botning ishlash tezligi va sifatiga mutlaqo ta'sir
-qilmaydi.**
+Ecma Uzbekistan consists of sub-communities which needs moderation tools like telegram bots. Therefore, it was decided to implement a single telegram bot for all sub-communities to moderate, manage and provide.
 
-## Dokumentatsiyalar
+## Development
 
-- **grammY** - [Github](https://github.com/grammyjs/grammY)
-- **Telegram Bot API** - [Web sahifa](https://core.telegram.org/bots/api)
+This project has everything configured ready to get started with developer right away thanks to Nix package manager. In order to get started:
 
-## Kontributorlar (rivojlantirish jarayonida qatnashgan dasturchilar)
+```bash
+# Start development environment
+nix develop -c $SHELL
 
-Ushbu bot kontributorlarga rahmatlar bo'lsinki bor va shu odamlar:
+# Open favorite editor of your choice
+zed .
 
-- [Genemator](https://github.com/genemators) _(Yaratuvchi)_ - Ushbu botni
-  yaratish fikriga kelgan, va uni realizatsiya bilan shug'ullangan inson.
-- [Jakhongir | JustCodeIt](https://github.com/Jakhongiirr)
-  _(Rivojlantiruvchi)_ - Botni rivojlantirib borish va undagi yangi
-  qulayliklarni yaralishiga sababchi bo'lgan inson. Ikkinchi darajali yaratuvchi
-  hisoblanadi.
-- [SaDi](https://github.com/sad1go0) _(Rivojlantiruvchi)_ - Botni Node.js
-  texnologiyasidan Deno.land'ga o'girishga yordam bergan dasturchi hisoblanadi.
+# Start development server
+npm run dev
+```
 
-> Kontributlardan biriga aylanish uchun o'z hissangizni qo'shing!
+## Building
 
----
+This project aims to build standalone javascript and deployed in [Kolyma Labs](https://github.com/kolyma-labs). Kolyma's NixOS server gets `nix build` output, but you can build it inside development environment using `npm` package manager.
 
-> Hozirda bot test fazasida va turli sinovlardan o'tmoqda. Agarda biron
-> kamchilik yoki muammolarga duchor bo'ladigan bo'lsangiz, repozitoriyada ushbu
-> muammoni quyidagi [havola](https://github.com/xinuxuz/xeonitte/issues/new)
-> yordamida qoldiring!
+```bash
+# Building with nix`
+nix build .
 
----
+# Building with npm
+npm run build
+```
 
-> **Muhim Eslatma:** Toki Genemator yoki Jakhongir ruxsat bermas ekan,
-> [(shu proyektni)](https://github.com/wiut-bis/maid) shaxsiy yoki umumiy
-> maqsadlarda ishlatish, hamda ko'chirish taqiqlanadi. Ushbu
-> [litzensiya](license) bo'yicha siz o'zingiz modifikatsion turingiz yasab olish
-> uchun, genemator yoki jakhongirdan ruxsat olishingiz darmoqdir. Ko'proq
-> ma'lumot uchun [litzensiya](license)ni ko'zdan kechiring.
+## Thanks
 
-<p align="center">Barcha Huquqlar Himoyalangan &copy; 2020 <a href="https://genemator.uz" target="_blank">Xinux O'zbekiston</a></p>
+- [Orzklv](https://github.com/orzklv) - Bootstraping this project + devops management.
+- [Diyorbek](https://github.com/diyorbekrustamjonov) - Maintaining this website keeping it active and up to date.
 
-<p align="center"><a href="https://github.com/xinuxuz/xeonitte/blob/main/license"><img src="https://img.shields.io/static/v1.svg?style=flat-square&label=License&message=CC0-1.0&logoColor=eceff4&logo=github&colorA=000000&colorB=ffffff"/></a></p>
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+<p align="center">
+    <img src=".github/assets/footer.png" alt="Ecma Uzbekistan's {Telegram}">
+</p>
