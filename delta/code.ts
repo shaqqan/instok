@@ -29,36 +29,39 @@ composer.command("code", async (ctx: Context) => {
     const msg = _msg.replace(/\n/gi, " ");
     const splitted = msg?.split(" ");
 
-    if (typeof splitted[1] === "undefined")
+    if (typeof splitted[1] === "undefined") {
       return ctx.reply("Dasturlash tili ko'rsatilmadi", {
         reply_to_message_id: msg_id,
       });
-    if (typeof splitted[2] === "undefined")
+    }
+    if (typeof splitted[2] === "undefined") {
       return ctx.reply("Kod ko'rsatilmadi", {
         reply_to_message_id: msg_id,
       });
+    }
 
     const lang = splitted[1].toLowerCase();
 
     // parsing python code from tg message is hard -_-
-    if (lang === "python" || lang === "py")
+    if (lang === "python" || lang === "py") {
       return ctx.reply(
         "Uzr, python tili sintaksisda \"space\"ga ishongani uchun, menga to'g'ri kelmaydi",
         {
           reply_to_message_id: msg_id,
-        }
+        },
       );
+    }
 
     splitted[0] = "";
     splitted[1] = "";
 
     const code = splitted.join(" ");
     const available_langs = await fetch(
-      "https://emkc.org/api/v2/piston/runtimes"
+      "https://emkc.org/api/v2/piston/runtimes",
     );
     const available_langs_json = (await available_langs.json()) as Language[];
     const foundLang = available_langs_json.find(
-      (l: Language) => l.language === lang
+      (l: Language) => l.language === lang,
     );
     const available_version = foundLang?.version;
 
@@ -66,14 +69,15 @@ composer.command("code", async (ctx: Context) => {
     if (
       typeof available_version === "undefined" &&
       (ctx.chat?.type === "group" || ctx.chat?.type === "supergroup")
-    )
+    ) {
       return ctx.reply(
         `${lang} tili bizning ro'yxatimizda yo'q :(\n` +
           `To'liq ro'yxatni dm orqali shu xabarni yuborib bila olasiz`,
         {
           reply_to_message_id: msg_id,
-        }
+        },
       );
+    }
 
     if (
       typeof available_version === "undefined" &&
@@ -112,8 +116,7 @@ composer.command("code", async (ctx: Context) => {
     const exitCode = outputjson.run.code;
 
     // send the output
-    const message =
-      `<strong>Til</strong>: ${outputjson.language}\n` +
+    const message = `<strong>Til</strong>: ${outputjson.language}\n` +
       `<strong>Versiya:</strong> ${outputjson.version}\n` +
       `<strong>Natija:</strong>\n` +
       `   <strong>stdout:</strong> ${stdout}` +

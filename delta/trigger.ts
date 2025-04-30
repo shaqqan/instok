@@ -1,7 +1,7 @@
 // deno-lint-ignore-file no-explicit-any
 import { reply } from "../utils/sender.ts";
 import isReply from "../hooks/isReply.ts";
-import topics from "../topics.json" assert { type: "json" };
+import topics from "../topics.json" with { type: "json" };
 import { Composer, Context, InlineKeyboard } from "../deps.ts";
 
 const composer = new Composer();

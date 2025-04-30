@@ -4,7 +4,7 @@ start:
 	deno run --allow-all mod.ts
 
 dev:
-	deno run --watch --allow-all mod.ts
+	deno run --watch-hmr --allow-all mod.ts
 
 fmt:
 	deno fmt

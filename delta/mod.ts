@@ -13,8 +13,8 @@ import trigger from "./trigger.ts";
 import feedback from "./feedback.ts";
 import code from "./code.ts";
 
-export default async (bot: Bot) => {
-  await bot
+export default (bot: Bot) => {
+  bot
     .use(start)
     .use(honor)
     .use(help)

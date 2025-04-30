@@ -1,6 +1,6 @@
 // deno-lint-ignore-file no-explicit-any
 import { Composer, Context } from "../deps.ts";
-import topics from "../topics.json" assert { type: "json" };
+import topics from "../topics.json" with { type: "json" };
 
 const composer = new Composer();
 

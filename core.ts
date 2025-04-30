@@ -1,65 +1,73 @@
-import { blue, Bot, serve, webhookCallback } from "./deps.ts";
+import { blue, Bot, webhookCallback } from "./deps.ts";
 import "./utils/config.ts";
 import env from "./utils/config.ts";
 import delta from "./delta/mod.ts";
+import { Config, Configs } from "./config.ts";
+import args from "./cli.ts";
 
-export const bot = new Bot(env["TOKEN"] || "");
-export const handle = webhookCallback(bot, "std/http");
+export const handle = (bot: Bot) => webhookCallback(bot, "std/http");
 
-const initializer = async () => {
-  await console.log(blue("[INFO]"), `bot is starting on ${env["HOST"]}`);
-  await delta(bot);
-  await bot.catch((error) => {
-    console.log(error, error.ctx.api);
-  });
-};
+const webhook = (bot: Bot, config: Configs) => {
+  console.log(blue("[INFO]"), `bot is starting on ${config.mode}`);
 
-const webhook = async () => {
-  await console.log(blue("[INFO]"), `bot is starting on ${env["HOST"]}`);
-  await serve(async (req) => {
+  Deno.serve({
+    port: config.port,
+    hostname: "127.0.0.1",
+  }, async (req) => {
     const url = new URL(req.url);
 
-    if (req.method == "POST") {
-      switch (url.pathname) {
-        case "/bot":
-          try {
-            return await handle(req);
-          } catch (err) {
-            console.error(err);
-            return new Response("Nope, not working...");
-          }
-        default:
-          return new Response("What you're trying to post?");
+    console.log(config);
+
+    if (req.method === "POST") {
+      if (url.pathname.slice(1) === bot.token) {
+        try {
+          return await handle(bot)(req);
+        } catch (err) {
+          console.error(err);
+        }
       }
     }
 
-    switch (url.pathname) {
-      case "/webhook":
-        try {
-          await bot.api.setWebhook(`https://${url.hostname}/bot`);
-          return new Response("Done. Set");
-        } catch (_) {
-          return new Response("Couldn't succeed with installing webhook");
-        }
-      default:
-        return Response.redirect("https://t.me/xeonittebot", 302);
+    if (req.method === "GET") {
+      try {
+        await bot.api.setWebhook(`${config.host}/${bot.token}`);
+        return new Response("Done. Set");
+      } catch (_) {
+        return new Response("Couldn't succeed with installing webhook");
+      }
     }
+
+    return new Response("What you're trying to post?");
   });
 };
 
-const polling = async () => {
+const polling = async (bot: Bot) => {
   await bot.start();
 };
 
 export const launch = async () => {
-  switch (env["HOST"]) {
-    case "WEBHOOK":
-      await initializer();
-      await webhook();
+  if (args.config == undefined) {
+    console.log("Path to config file is not defined!");
+    Deno.exit(1);
+  }
+
+  const config = new Config(args.config);
+  await config.consume();
+
+  const data: Configs = config.data();
+  const bot = new Bot(data.token);
+
+  delta(bot);
+  bot.catch((error) => {
+    console.log(error, error.ctx.api);
+  });
+
+  switch (data.mode) {
+    case "webhook":
+      webhook(bot, data);
       break;
-    case "POLLING":
-      await initializer();
-      await polling();
+    case "polling":
+      await polling(bot);
       break;
     default:
       throw new Error("Deploy method not validated!");
