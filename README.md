@@ -1,55 +1,103 @@
-<p align="center">
-    <img src=".github/assets/header.png" alt="Ecma Uzbekistan's {Telegram}">
-</p>
+# InstokBot - Telegram Bot for Media Downloads
 
-<p align="center">
-    <h3 align="center">Telegram bot for managing all sub-communities.</h3>
-</p>
+A Telegram bot that can download videos and audios from various platforms including TikTok, Likee, YouTube, and Instagram without watermarks.
 
-<p align="center">
-    <img align="center" src="https://img.shields.io/github/languages/top/ecma-uz/telegram?style=flat&logo=javascript&logoColor=ffffff&labelColor=00AC5B&color=00AC5B" alt="Top Used Language">
-</p>
+## Features
 
-## About
+- Download videos from Instagram posts, reels, stories, and TV
+- Download videos from TikTok, Likee, and YouTube (coming soon)
+- User management with PostgreSQL database
+- Session tracking and usage statistics
+- Multi-language support
+- Built with TypeScript and Drizzle ORM
 
-Ecma Uzbekistan consists of sub-communities which needs moderation tools like telegram bots. Therefore, it was decided to implement a single telegram bot for all sub-communities to moderate, manage and provide.
+## Prerequisites
 
-## Development
+- Node.js 18+ 
+- PostgreSQL database
+- Telegram Bot Token
 
-This project has everything configured ready to get started with developer right away thanks to Nix package manager. In order to get started:
+## Installation
 
+1. Clone the repository:
 ```bash
-# Start development environment
-nix develop -c $SHELL
-
-# Open favorite editor of your choice
-zed .
-
-# Start development server
-npm run dev
+git clone <repository-url>
+cd instokbot
 ```
 
-## Building
-
-This project aims to build standalone javascript and deployed in [Kolyma Labs](https://github.com/kolyma-labs). Kolyma's NixOS server gets `nix build` output, but you can build it inside development environment using `npm` package manager.
-
+2. Install dependencies:
 ```bash
-# Building with nix`
-nix build .
-
-# Building with npm
-npm run build
+pnpm install
 ```
 
-## Thanks
+3. Set up environment variables:
+Create a `.env` file in the root directory:
+```env
+DATABASE_URL=postgresql://username:password@localhost:5432/instokbot
+BOT_TOKEN=your_bot_token_here
+```
 
-- [Orzklv](https://github.com/orzklv) - Bootstraping this project + devops management.
-- [Diyorbek](https://github.com/diyorbekrustamjonov) - Maintaining this website keeping it active and up to date.
+4. Set up the database:
+```bash
+# Create PostgreSQL database
+createdb instokbot
+
+# Generate and run database migrations
+pnpm run db:generate
+pnpm run db:push
+```
+
+## Usage
+
+### Development
+```bash
+pnpm run dev
+```
+
+### Production
+```bash
+pnpm run start
+```
+
+### Database Commands
+```bash
+# Generate migrations
+pnpm run db:generate
+
+# Push schema to database
+pnpm run db:push
+
+# Open Drizzle Studio
+pnpm run db:studio
+```
+
+## Database Schema
+
+The bot uses the following main tables:
+
+- **users**: Stores user information and preferences
+- **user_sessions**: Tracks user bot sessions
+- **download_history**: Records all download attempts
+- **language_preferences**: Stores user language settings
+
+## Project Structure
+
+```
+src/
+├── database/          # Database configuration and schema
+├── handlers/          # Bot command handlers
+├── keyboards/         # Inline keyboards
+├── services/          # Business logic services
+└── index.ts          # Main entry point
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-<p align="center">
-    <img src=".github/assets/footer.png" alt="Ecma Uzbekistan's {Telegram}">
-</p>
+ISC

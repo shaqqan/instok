@@ -1,12 +1,7 @@
-# Direnv garbage
-.direnv
+./d
+node_modules
+dist
 
-# Environmental files
 .env
 
-# Editors
-.idea
-.vscode
-
-# Data file
-config.toml
+debug.log
