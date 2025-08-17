@@ -1,1 +1,0 @@
-{"version":3,"file":"container.js","sourceRoot":"","sources":["../../../src/interfaces/telegram/container.ts"],"names":[],"mappings":";;;AAAA,6FAA0F;AAC1F,+FAAmG;AACnG,qFAAyF;AAEzF,MAAM,cAAc,GAAG,IAAI,6CAAqB,EAAE,CAAC;AAEtC,QAAA,QAAQ,GAAG;IACpB,oBAAoB,EAAE,IAAI,kDAA2B,CAAC,cAAc,CAAC;IACrE,eAAe,EAAE,IAAI,wCAAsB,CAAC,cAAc,CAAC;CAC9D,CAAC"}
