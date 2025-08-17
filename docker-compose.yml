@@ -1,0 +1,76 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: telegram-bot-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: telegram_bot
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./src/database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - bot-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Telegram Bot Application
+  bot:
+    build: .
+    container_name: telegram-bot-app
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      BOT_TOKEN: ${BOT_TOKEN}
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: telegram_bot
+      DB_USER: postgres
+      DB_PASSWORD: password
+      LOG_LEVEL: info
+    volumes:
+      - ./logs:/app/logs
+    networks:
+      - bot-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "console.log('Bot is running')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Optional: pgAdmin for database management
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: telegram-bot-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "8080:80"
+    depends_on:
+      - postgres
+    networks:
+      - bot-network
+    profiles:
+      - admin
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  bot-network:
+    driver: bridge
