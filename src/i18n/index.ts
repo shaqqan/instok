@@ -1,5 +1,5 @@
 import { Context } from "grammy";
-import { DrizzleUserRepository } from "../infrastructure/repositories/DrizzleUserRepository";
+import { DrizzleUserRepository } from "../database/repositories/DrizzleUserRepository";
 
 export type SupportedLanguage = "en" | "uz" | "ru" | "kaa";
 

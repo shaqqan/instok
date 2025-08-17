@@ -1,7 +1,7 @@
 import { Bot } from "grammy";
 import { i18nMiddleware } from "./i18n";
 import { config } from "./config";
-import { logger } from "./shared/logger";
+import { logger } from "./utils/logger";
 
 const STORAGE_CHANNEL_ID = config.STORAGE_CHANNEL_ID;
 

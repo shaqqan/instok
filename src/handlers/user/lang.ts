@@ -2,7 +2,7 @@ import { bot } from "../../loader";
 import { LanguagesInlineBtn } from "../../keyboards";
 import { I18nContext } from "../../i18n";
 import { useCases } from "../../interfaces/telegram/container";
-import { logger } from "../../shared/logger";
+import { logger } from "../../utils/logger";
 
 bot.command("lang", async (ctx) => {
     try {

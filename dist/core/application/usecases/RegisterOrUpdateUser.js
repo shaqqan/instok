@@ -1,4 +1,8 @@
-export class RegisterOrUpdateUserUseCase {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.RegisterOrUpdateUserUseCase = void 0;
+class RegisterOrUpdateUserUseCase {
+    userRepository;
     constructor(userRepository) {
         this.userRepository = userRepository;
     }
@@ -7,4 +11,5 @@ export class RegisterOrUpdateUserUseCase {
         return user;
     }
 }
+exports.RegisterOrUpdateUserUseCase = RegisterOrUpdateUserUseCase;
 //# sourceMappingURL=RegisterOrUpdateUser.js.map

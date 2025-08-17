@@ -1,4 +1,4 @@
-import { DrizzleUserRepository } from "../../infrastructure/repositories/DrizzleUserRepository";
+import { DrizzleUserRepository } from "../../database/repositories/DrizzleUserRepository";
 import { RegisterOrUpdateUserUseCase } from "../../core/application/usecases/RegisterOrUpdateUser";
 import { SetUserLanguageUseCase } from "../../core/application/usecases/SetUserLanguage";
 

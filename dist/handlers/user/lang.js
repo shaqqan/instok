@@ -1,23 +1,24 @@
-import { bot } from "../../loader";
-import { LanguagesInlineBtn } from "../../keyboards";
-import { useCases } from "../../interfaces/telegram/container";
-import { logger } from "../../shared/logger";
-bot.command("lang", async (ctx) => {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const loader_1 = require("../../loader");
+const keyboards_1 = require("../../keyboards");
+const container_1 = require("../../interfaces/telegram/container");
+const logger_1 = require("../../utils/logger");
+loader_1.bot.command("lang", async (ctx) => {
     try {
         const i18nCtx = ctx;
         const messageText = i18nCtx.i18n.t("language.select_language");
         await ctx.reply(messageText, {
-            reply_markup: LanguagesInlineBtn,
+            reply_markup: keyboards_1.LanguagesInlineBtn,
         });
     }
     catch (error) {
-        logger.error("Language command error", error);
+        logger_1.logger.error("Language command error", error);
         const i18nCtx = ctx;
         await ctx.reply(i18nCtx.i18n.t("general.error"));
     }
 });
-// Handle language selection callbacks
-bot.callbackQuery(/^(uz|ru|en)$/i, async (ctx) => {
+loader_1.bot.callbackQuery(/^(uz|kaa|ru|en)$/, async (ctx) => {
     try {
         const i18nCtx = ctx;
         const selectedLang = ctx.callbackQuery?.data;
@@ -25,19 +26,15 @@ bot.callbackQuery(/^(uz|ru|en)$/i, async (ctx) => {
             await ctx.answerCallbackQuery(i18nCtx.i18n.t("language.invalid_language"));
             return;
         }
-        // Here you would save the user's language preference to the database
-        // For now, we'll just acknowledge the selection
         const successMessage = i18nCtx.i18n.t("language.language_changed", { language: selectedLang });
         await ctx.answerCallbackQuery(successMessage);
-        // Update the message to show the selected language
-        // update in-memory language for this request chain
         i18nCtx.i18n.setLanguage(selectedLang);
         const updatedMessage = i18nCtx.i18n.t("language.language_selected", { language: selectedLang });
         await ctx.editMessageText(updatedMessage);
-        await useCases.setUserLanguage.execute({ telegramId: ctx.from.id, language: selectedLang });
+        await container_1.useCases.setUserLanguage.execute({ telegramId: ctx.from.id, language: selectedLang });
     }
     catch (error) {
-        logger.error("Language callback error", error);
+        logger_1.logger.error("Language callback error", error);
         const i18nCtx = ctx;
         await ctx.answerCallbackQuery(i18nCtx.i18n.t("general.error"));
     }

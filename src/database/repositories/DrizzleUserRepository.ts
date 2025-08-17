@@ -1,6 +1,6 @@
 import { UserRepository } from "../../core/domain/repositories/UserRepository";
 import { UserEntity } from "../../core/domain/entities/User";
-import { db, users } from "../../database";
+import { db, users } from "../index";
 import { eq } from "drizzle-orm";
 
 export class DrizzleUserRepository implements UserRepository {

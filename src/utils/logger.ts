@@ -1,36 +1,53 @@
-import winston from 'winston';
+import winston from "winston";
+import { config } from "../config";
 
-const logFormat = winston.format.combine(
-  winston.format.timestamp(),
-  winston.format.errors({ stack: true }),
-  winston.format.json()
-);
+export interface Logger {
+  debug(message: string, meta?: unknown): void;
+  info(message: string, meta?: unknown): void;
+  warn(message: string, meta?: unknown): void;
+  error(message: string, meta?: unknown): void;
+}
 
-const consoleFormat = winston.format.combine(
-  winston.format.colorize(),
-  winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-  winston.format.printf(({ timestamp, level, message, ...meta }) => {
-    let msg = `${timestamp} [${level}]: ${message}`;
-    if (Object.keys(meta).length > 0) {
-      msg += ` ${JSON.stringify(meta)}`;
-    }
-    return msg;
-  })
-);
-
-export const logger = winston.createLogger({
-  level: process.env.LOG_LEVEL || 'info',
-  format: logFormat,
-  defaultMeta: { service: 'telegram-bot' },
-  transports: [
-    new winston.transports.File({ filename: 'logs/error.log', level: 'error' }),
-    new winston.transports.File({ filename: 'logs/combined.log' }),
-  ],
+const enumerateErrorFormat = winston.format((info) => {
+  if (info instanceof Error) {
+    return Object.assign(
+      {
+        message: info.message,
+        stack: info.stack,
+      },
+      info
+    );
+  }
+  return info;
 });
 
-// If we're not in production, log to console with colors
-if (process.env.NODE_ENV !== 'production') {
-  logger.add(new winston.transports.Console({
-    format: consoleFormat
-  }));
+function createLogger(): Logger {
+  const level = config.LOG_LEVEL;
+  const isProd = config.NODE_ENV === "production";
+
+  const logger = winston.createLogger({
+    level,
+    format: winston.format.combine(
+      enumerateErrorFormat(),
+      winston.format.timestamp(),
+      winston.format.errors({ stack: true }),
+      isProd
+        ? winston.format.json()
+        : winston.format.printf(({ level, message, timestamp, stack, ...rest }) => {
+            const meta = Object.keys(rest).length ? ` ${JSON.stringify(rest)}` : "";
+            const stackStr = stack ? `\n${stack}` : "";
+            return `${timestamp as string} ${level}: ${message as string}${meta}${stackStr}`;
+          })
+    ),
+    transports: [new winston.transports.Console()],
+  });
+
+  return {
+    debug: (msg, meta) => logger.debug(msg, meta ? { meta } : undefined),
+    info: (msg, meta) => logger.info(msg, meta ? { meta } : undefined),
+    warn: (msg, meta) => logger.warn(msg, meta ? { meta } : undefined),
+    error: (msg, meta) => logger.error(msg, meta ? { meta } : undefined),
+  };
 }
+
+export const logger: Logger = createLogger();
