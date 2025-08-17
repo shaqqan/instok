@@ -4,6 +4,7 @@ import { logger } from "../../utils/logger";
 
 bot.command("start", async (ctx) => {
     try {
+        console.log("start command", ctx);
         // Get user information from Telegram context
         const telegramId = ctx.from?.id;
         const username = ctx.from?.username;

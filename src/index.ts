@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import { logger } from './utils/logger';
 import { connectDatabase } from './database/connection';
 import { setupMiddleware } from './middleware';
+import './handlers';
 
 // Load environment variables
 dotenv.config();
