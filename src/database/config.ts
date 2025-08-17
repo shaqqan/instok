@@ -2,7 +2,7 @@ import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import { migrate } from 'drizzle-orm/postgres-js/migrator';
 import { config } from '../config';
-import { logger } from '../shared/logger';
+import { logger } from '../utils/logger';
 
 // Database connection configuration
 const connectionString = config.DATABASE_URL;

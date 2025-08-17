@@ -1,6 +1,6 @@
 import { bot } from "../../loader";
 import { useCases } from "../../interfaces/telegram/container";
-import { logger } from "../../shared/logger";
+import { logger } from "../../utils/logger";
 
 bot.command("start", async (ctx) => {
     try {

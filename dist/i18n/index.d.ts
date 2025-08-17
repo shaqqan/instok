@@ -1,5 +1,5 @@
 import { Context } from "grammy";
-export type SupportedLanguage = "en" | "uz" | "ru";
+export type SupportedLanguage = "en" | "uz" | "ru" | "kaa";
 export interface I18nContext extends Context {
     i18n: {
         t: (key: string, params?: Record<string, string | number>) => string;

@@ -1,8 +1,12 @@
-import { bot, STORAGE_CHANNEL_ID } from "../../loader";
-import { instagramGetUrl } from "../../services";
-import { StorageService } from "../../services/storage";
-import { logger } from "../../shared/logger";
-// Instagram URL patternlari
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const loader_1 = require("../../loader");
+const services_1 = require("../../services");
+const storage_1 = require("../../services/storage");
+const logger_1 = require("../../utils/logger");
 const instagramPatterns = {
     post: /^https?:\/\/(www\.)?instagram\.com\/p\/[A-Za-z0-9_-]+\/?(\?.*)?$/i,
     reel: /^https?:\/\/(www\.)?instagram\.com\/reel\/[A-Za-z0-9_-]+\/?(\?.*)?$/i,
@@ -10,14 +14,12 @@ const instagramPatterns = {
     tv: /^https?:\/\/(www\.)?instagram\.com\/tv\/[A-Za-z0-9_-]+\/?(\?.*)?$/i,
     profile: /^https?:\/\/(www\.)?instagram\.com\/[A-Za-z0-9_.]+\/?(\?.*)?$/i
 };
-// Caption xavfsiz kesish
 function safeCaption(text, botUsername, ctx, limit = 1024) {
     const suffix = ctx.i18n.t("caption.suffix", { botUsername });
     const maxLength = limit - suffix.length;
     const trimmed = text?.length > maxLength ? text.slice(0, maxLength - 3) + "..." : text || "";
     return ctx.i18n.t("caption.prefix", { text: trimmed }) + suffix;
 }
-// Message dan file_id olish
 function extractMediaInfo(message, caption, ctx) {
     if ("photo" in message && message.photo?.length) {
         return { type: ctx.i18n.t("media.photo"), media: message.photo.at(-1).file_id, caption };
@@ -27,11 +29,11 @@ function extractMediaInfo(message, caption, ctx) {
     }
     return { type: "", media: "", caption };
 }
-import axios from "axios";
-import { InputFile } from "grammy";
+const axios_1 = __importDefault(require("axios"));
+const grammy_1 = require("grammy");
 async function fetchAsInputFile(url, filename) {
-    const res = await axios.get(url, { responseType: "arraybuffer" });
-    return new InputFile(Buffer.from(res.data), filename);
+    const res = await axios_1.default.get(url, { responseType: "arraybuffer" });
+    return new grammy_1.InputFile(Buffer.from(res.data), filename);
 }
 async function sendMediaInChunks(ctx, url, mediaDetails, caption, botUsername) {
     try {
@@ -44,50 +46,45 @@ async function sendMediaInChunks(ctx, url, mediaDetails, caption, botUsername) {
                 caption: i === 0 && idx === 0 ? safeText : undefined,
                 thumbnail: m.thumbnail,
             })));
-            // Userga yuborish
             const messageGroup = await ctx.replyWithMediaGroup(chunk);
-            await StorageService.saveMedia(BigInt(STORAGE_CHANNEL_ID), BigInt(messageGroup[0].message_id), url, messageGroup.map(msg => extractMediaInfo(msg, safeText, ctx)));
+            await storage_1.StorageService.saveMedia(BigInt(loader_1.STORAGE_CHANNEL_ID), BigInt(messageGroup[0].message_id), url, messageGroup.map(msg => extractMediaInfo(msg, safeText, ctx)));
         }
     }
     catch (err) {
-        logger.error("sendMediaInChunks error", err);
+        logger_1.logger.error("sendMediaInChunks error", err);
         await ctx.reply(ctx.i18n.t("instagram.download_error"));
     }
 }
-// Instagram linkni ishlovchi funksiya
 async function processInstagram(ctx, type) {
     const processingMsg = await ctx.replyWithSticker("CAACAgEAAxkBAAIJK2ibhK4FtDZAIWXLaaUF7kB5X5U0AAItAgACpyMhRD1AMMntg7S2NgQ", { reply_to_message_id: ctx.message?.message_id });
     try {
         const text = ctx.message?.text?.trim() || "";
-        // Avval DB tekshirish
-        const savedMedia = await StorageService.getMediaByUrl(text);
+        const savedMedia = await storage_1.StorageService.getMediaByUrl(text);
         if (savedMedia?.length) {
             await ctx.replyWithMediaGroup(savedMedia[0].media);
             console.log(ctx.i18n.t("instagram.sent_from_db"));
             return;
         }
-        // API dan olish
-        const urlData = await instagramGetUrl(text);
+        const urlData = await (0, services_1.instagramGetUrl)(text);
         if (!urlData?.results_number) {
             return ctx.reply(ctx.i18n.t("instagram.invalid_url"));
         }
         if (urlData.media_details?.length) {
-            await sendMediaInChunks(ctx, text, urlData.media_details, urlData.post_info.caption, bot.botInfo.username);
+            await sendMediaInChunks(ctx, text, urlData.media_details, urlData.post_info.caption, loader_1.bot.botInfo.username);
         }
         else {
             await ctx.reply(ctx.i18n.t("instagram.no_media"));
         }
     }
     catch (err) {
-        logger.error(`Instagram ${type} error (user: ${ctx.from?.id})`, err);
+        logger_1.logger.error(`Instagram ${type} error (user: ${ctx.from?.id})`, err);
         await ctx.reply(ctx.i18n.t("instagram.error"));
     }
     finally {
         await ctx.api.deleteMessage(ctx.chat.id, processingMsg.message_id);
     }
 }
-// Barcha patternlarni ro'yxatdan o'tkazish
 Object.entries(instagramPatterns).forEach(([type, pattern]) => {
-    bot.hears(pattern, (ctx) => processInstagram(ctx, type));
+    loader_1.bot.hears(pattern, (ctx) => processInstagram(ctx, type));
 });
 //# sourceMappingURL=instagram.js.map

@@ -1,7 +1,12 @@
-import axios from 'axios';
-import qs from 'qs';
-//Main function
-export async function instagramGetUrl(url_media, config = { retries: 5, delay: 1000 }) {
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.instagramGetUrl = instagramGetUrl;
+const axios_1 = __importDefault(require("axios"));
+const qs_1 = __importDefault(require("qs"));
+async function instagramGetUrl(url_media, config = { retries: 5, delay: 1000 }) {
     return new Promise(async (resolve, reject) => {
         try {
             url_media = await checkRedirect(url_media);
@@ -15,11 +20,10 @@ export async function instagramGetUrl(url_media, config = { retries: 5, delay: 1
         }
     });
 }
-//Utilities
 async function checkRedirect(url) {
     let split_url = url.split("/");
     if (split_url.includes("share")) {
-        let res = await axios.get(url);
+        let res = await axios_1.default.get(url);
         return res.request.path;
     }
     return url;
@@ -84,7 +88,7 @@ async function getCSRFToken() {
             url: 'https://www.instagram.com/',
         };
         const token = await new Promise((resolve, reject) => {
-            axios.request(config).then((response) => {
+            axios_1.default.request(config).then((response) => {
                 if (!response.headers['set-cookie']) {
                     reject(new Error('CSRF token not found in response headers.'));
                 }
@@ -115,7 +119,7 @@ async function instagramRequest(shortcode, retries, delay) {
     try {
         const BASE_URL = "https://www.instagram.com/graphql/query";
         const INSTAGRAM_DOCUMENT_ID = "9510064595728286";
-        let dataBody = qs.stringify({
+        let dataBody = qs_1.default.stringify({
             'variables': JSON.stringify({
                 'shortcode': shortcode,
                 'fetch_tagged_user_count': null,
@@ -135,7 +139,7 @@ async function instagramRequest(shortcode, retries, delay) {
             },
             data: dataBody
         };
-        const { data } = await axios.request(config);
+        const { data } = await axios_1.default.request(config);
         if (!data.data?.xdt_shortcode_media)
             throw new Error("Only posts/reels supported, check if your link is valid.");
         return data.data.xdt_shortcode_media;
@@ -156,24 +160,22 @@ function createOutputData(requestData) {
         let url_list = [], media_details = [];
         const IS_SIDECAR = isSidecar(requestData);
         if (IS_SIDECAR) {
-            //Post with sidecar
             requestData.edge_sidecar_to_children.edges.forEach((media) => {
                 media_details.push(formatMediaDetails(media.node));
-                if (media.node.is_video) { //Sidecar video item
+                if (media.node.is_video) {
                     url_list.push(media.node.video_url);
                 }
-                else { //Sidecar image item
+                else {
                     url_list.push(media.node.display_url);
                 }
             });
         }
         else {
-            //Post without sidecar
             media_details.push(formatMediaDetails(requestData));
-            if (requestData.is_video) { // Video media
+            if (requestData.is_video) {
                 url_list.push(requestData.video_url);
             }
-            else { //Image media
+            else {
                 url_list.push(requestData.display_url);
             }
         }

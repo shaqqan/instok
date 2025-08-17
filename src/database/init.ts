@@ -1,6 +1,6 @@
 import { db } from './config';
 import { users, storage } from './schema';
-import { logger } from '../shared/logger';
+import { logger } from '../utils/logger';
 
 export async function initializeDatabase() {
   try {

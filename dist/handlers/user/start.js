@@ -1,9 +1,10 @@
-import { bot } from "../../loader";
-import { useCases } from "../../interfaces/telegram/container";
-import { logger } from "../../shared/logger";
-bot.command("start", async (ctx) => {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const loader_1 = require("../../loader");
+const container_1 = require("../../interfaces/telegram/container");
+const logger_1 = require("../../utils/logger");
+loader_1.bot.command("start", async (ctx) => {
     try {
-        // Get user information from Telegram context
         const telegramId = ctx.from?.id;
         const username = ctx.from?.username;
         const firstName = ctx.from?.first_name;
@@ -12,8 +13,7 @@ bot.command("start", async (ctx) => {
             await ctx.reply("❌ Error: Could not identify user");
             return;
         }
-        // Create or update user in database via use case
-        await useCases.registerOrUpdateUser.execute({
+        await container_1.useCases.registerOrUpdateUser.execute({
             telegramId,
             username: username ?? null,
             firstName: firstName ?? null,
@@ -25,7 +25,7 @@ bot.command("start", async (ctx) => {
         });
     }
     catch (error) {
-        logger.error('Error in start command', error);
+        logger_1.logger.error('Error in start command', error);
         await ctx.reply("❌ An error occurred. Please try again later.");
     }
 });

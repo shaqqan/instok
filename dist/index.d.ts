@@ -1,2 +1,2 @@
-import "./handlers";
+export {};
 //# sourceMappingURL=index.d.ts.map

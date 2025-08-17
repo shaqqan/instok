@@ -1,12 +1,18 @@
-import dotenv from "dotenv";
-dotenv.config();
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.config = void 0;
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
 function parseNumber(value, fallback) {
     if (!value)
         return fallback;
     const parsed = Number(value);
     return Number.isFinite(parsed) ? parsed : fallback;
 }
-export const config = {
+exports.config = {
     NODE_ENV: process.env.NODE_ENV ?? "development",
     LOG_LEVEL: process.env.LOG_LEVEL ?? (process.env.NODE_ENV === "production" ? "info" : "debug"),
     DATABASE_URL: process.env.DATABASE_URL ?? "postgresql://username:password@localhost:5432/instokbot",

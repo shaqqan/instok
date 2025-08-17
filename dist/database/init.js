@@ -1,31 +1,31 @@
-import { db } from './config';
-import { users } from './schema';
-import { logger } from '../shared/logger';
-export async function initializeDatabase() {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.initializeDatabase = initializeDatabase;
+exports.checkDatabaseConnection = checkDatabaseConnection;
+const config_1 = require("./config");
+const schema_1 = require("./schema");
+const logger_1 = require("../utils/logger");
+async function initializeDatabase() {
     try {
-        logger.info('Initializing database...');
-        // Create tables (this will be handled by migrations in production)
-        // For development, you can use this to quickly set up the database
-        logger.info('Database initialization completed');
+        logger_1.logger.info('Initializing database...');
+        logger_1.logger.info('Database initialization completed');
     }
     catch (error) {
-        logger.error('Database initialization failed', error);
+        logger_1.logger.error('Database initialization failed', error);
         throw error;
     }
 }
-export async function checkDatabaseConnection() {
+async function checkDatabaseConnection() {
     try {
-        // Simple query to test connection
-        const result = await db.select().from(users).limit(1);
-        logger.info('Database connection successful');
+        const result = await config_1.db.select().from(schema_1.users).limit(1);
+        logger_1.logger.info('Database connection successful');
         return true;
     }
     catch (error) {
-        logger.error('Database connection failed', error);
+        logger_1.logger.error('Database connection failed', error);
         return false;
     }
 }
-// Run if this file is executed directly
 if (import.meta.url === `file://${process.argv[1]}`) {
     checkDatabaseConnection()
         .then(() => process.exit(0))

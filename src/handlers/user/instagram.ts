@@ -2,7 +2,7 @@ import { bot, STORAGE_CHANNEL_ID } from "../../loader";
 import { instagramGetUrl } from "../../services";
 import { StorageService } from "../../services/storage";
 import { I18nContext } from "../../i18n";
-import { logger } from "../../shared/logger";
+import { logger } from "../../utils/logger";
 
 // Instagram URL patternlari
 const instagramPatterns: Record<string, RegExp> = {
